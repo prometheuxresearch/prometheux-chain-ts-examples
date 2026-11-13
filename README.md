@@ -30,7 +30,12 @@ Evaluation runs on your compute, so start a machine in the platform before runni
 | `npm run check`      | `src/04-check-programs.ts`           | Compile every program in `programs/` without running it (CI)  |
 | `npm run your-data`  | `src/05-evaluate-with-your-data.ts`  | Upload a CSV and evaluate a program that reads it via `@bind` |
 | `npm run concepts`   | `src/06-concepts.ts`                 | Save a program as a concept, run it, and page through results |
+| `npm run playground` | `src/07-playground.ts`               | Write and evaluate programs in a local web page               |
 | `npm test`           | `test/company-control.test.ts`       | Unit-test a Vadalog program with `node:test`                  |
+
+`npm run playground` opens http://localhost:3000: write a program on the left, press Evaluate (or
+⌘/Ctrl + Enter), and see each `@output` as a table on the right. Your token stays in the local
+server, which only accepts requests from that page. Set `PORT` to use another port.
 
 The Vadalog programs live in [`programs/`](programs). `company-control.vada` is the classic
 company-control problem: a company controls another when it owns more than half of it, directly

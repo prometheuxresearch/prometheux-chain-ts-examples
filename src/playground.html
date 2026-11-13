@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Vadalog playground</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root { color-scheme: dark; --bg: #0f1115; --panel: #171a21; --border: #2a2f3a; --text: #e6e8ee;
+      --muted: #8b93a7; --accent: #4a90fd; --danger: #e5534b; --header: #1f2430; }
+    body { margin: 0; height: 100vh; display: flex; flex-direction: column; font: 14px system-ui, sans-serif;
+      background: var(--bg); color: var(--text); }
+    header { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+    header h1 { font-size: 15px; margin: 0; }
+    header .hint { margin-left: auto; color: var(--muted); font-size: 12px; }
+    select { background: var(--panel); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; }
+    main { flex: 1; display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; padding: 16px; min-height: 0; }
+    textarea { width: 100%; height: 100%; resize: none; padding: 12px; border: 1px solid var(--border); border-radius: 6px;
+      background: var(--panel); color: var(--text); caret-color: var(--accent);
+      font: 13px/1.5 ui-monospace, Menlo, monospace; tab-size: 2; outline: none; }
+    textarea:focus { border-color: var(--accent); }
+    .actions { display: flex; align-items: center; }
+    button { padding: 10px 18px; border: 0; border-radius: 6px; background: var(--accent); color: white; font-weight: 600; cursor: pointer; }
+    button:hover { filter: brightness(1.1); }
+    button.stop { background: var(--danger); }
+    #output { overflow: auto; padding: 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--panel); }
+    #output .meta { color: var(--muted); margin-bottom: 12px; }
+    #output .error { color: var(--danger); white-space: pre-wrap; font-family: ui-monospace, Menlo, monospace; }
+    h2 { font-size: 13px; margin: 16px 0 6px; }
+    h2:first-of-type { margin-top: 0; }
+    table { border-collapse: collapse; font: 12px ui-monospace, Menlo, monospace; }
+    th, td { border: 1px solid var(--border); padding: 4px 8px; text-align: left; }
+    th { background: var(--header); color: var(--muted); }
+    tr:nth-child(even) td { background: #1b1f27; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Vadalog playground</h1>
+    <select id="examples"><option value="">Load example…</option></select>
+    <span class="hint">⌘/Ctrl + Enter to evaluate</span>
+  </header>
+  <main>
+    <textarea id="code" spellcheck="false"></textarea>
+    <div class="actions"><button id="run">Evaluate</button></div>
+    <div id="output"><div class="meta">Results appear here.</div></div>
+  </main>
+  <script>
+    const examples = /*EXAMPLES*/{};
+    const code = document.getElementById("code");
+    const run = document.getElementById("run");
+    const output = document.getElementById("output");
+    const select = document.getElementById("examples");
+    let controller = null;
+
+    for (const name of Object.keys(examples)) select.add(new Option(name, name));
+    select.onchange = () => {
+      if (select.value) code.value = examples[select.value];
+      select.value = "";
+    };
+    code.value = examples["company-control.vada"] ?? "";
+
+    run.onclick = () => (controller ? controller.abort() : evaluate());
+    code.onkeydown = (event) => {
+      if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        run.click();
+      }
+    };
+
+    async function evaluate() {
+      controller = new AbortController();
+      setRunning(true);
+      const started = performance.now();
+      try {
+        const response = await fetch("/evaluate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ program: code.value }),
+          signal: controller.signal,
+        });
+        const { result, error } = await response.json();
+        if (error) showError(error);
+        else showResult(result, performance.now() - started);
+      } catch (error) {
+        showError(error.name === "AbortError" ? "Stopped." : String(error));
+      } finally {
+        controller = null;
+        setRunning(false);
+      }
+    }
+
+    function setRunning(running) {
+      run.textContent = running ? "Stop" : "Evaluate";
+      run.classList.toggle("stop", running);
+      if (running) output.replaceChildren(element("div", "meta", "Evaluating…"));
+    }
+
+    function showError(message) {
+      output.replaceChildren(element("div", "error", message));
+    }
+
+    function showResult(result, ms) {
+      const predicates = Object.keys(result.resultSet ?? {});
+      output.replaceChildren(element("div", "meta",
+        `${predicates.length} output(s) in ${(ms / 1000).toFixed(1)} s`));
+      if (!predicates.length) output.append(element("div", "meta", "No @output predicates."));
+      for (const predicate of predicates) {
+        const rows = result.resultSet[predicate];
+        output.append(element("h2", "", `${predicate} (${rows.length} rows)`));
+        const table = document.createElement("table");
+        const head = table.createTHead().insertRow();
+        for (const column of result.columnNames?.[predicate] ?? []) head.append(element("th", "", column));
+        const body = table.createTBody();
+        for (const row of rows) {
+          const tr = body.insertRow();
+          for (const value of row) tr.append(element("td", "", typeof value === "string" ? value : JSON.stringify(value)));
+        }
+        output.append(table);
+      }
+    }
+
+    function element(tag, className, text) {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      node.textContent = text;
+      return node;
+    }
+  </script>
+</body>
+</html>

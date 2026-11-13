@@ -13,11 +13,12 @@
     "check": "tsx --env-file-if-exists=.env src/04-check-programs.ts",
     "your-data": "tsx --env-file-if-exists=.env src/05-evaluate-with-your-data.ts",
     "concepts": "tsx --env-file-if-exists=.env src/06-concepts.ts",
+    "playground": "tsx --env-file-if-exists=.env src/07-playground.ts",
     "test": "tsx --env-file-if-exists=.env --test test/*.test.ts",
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@pmtx/chain": "^0.1.0"
+    "@pmtx/chain": "^0.1.1"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
