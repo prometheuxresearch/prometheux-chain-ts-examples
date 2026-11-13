@@ -1,0 +1,12 @@
+% The same company-control rules, reading ownership from a CSV in your
+% workspace storage instead of inline facts. Run `npm run your-data` to upload
+% data/ownership.csv to disk/examples/ first.
+
+@bind("own", "csv useHeaders=true", "disk/examples", "ownership.csv").
+
+controlled_shares(X, Y, Y, Q) <- own(X, Y, Q), X <> Y.
+controlled_shares(X, Z, Y, Q) <- control(X, Y), own(Y, Z, Q), X <> Z, Z <> Y, X <> Y.
+total_controlled_shares(X, Y, S) <- controlled_shares(X, Y, Z, Q), S = msum(Q).
+control(X, Y) <- total_controlled_shares(X, Y, Q), Q > 0.5.
+
+@output("control").

@@ -1,0 +1,26 @@
+{
+  "name": "prometheux-chain-ts-examples",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "inline": "tsx --env-file-if-exists=.env src/01-evaluate-inline.ts",
+    "file": "tsx --env-file-if-exists=.env src/02-evaluate-file.ts",
+    "params": "tsx --env-file-if-exists=.env src/03-evaluate-with-params.ts",
+    "check": "tsx --env-file-if-exists=.env src/04-check-programs.ts",
+    "your-data": "tsx --env-file-if-exists=.env src/05-evaluate-with-your-data.ts",
+    "concepts": "tsx --env-file-if-exists=.env src/06-concepts.ts",
+    "test": "tsx --env-file-if-exists=.env --test test/*.test.ts",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@pmtx/chain": "^0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

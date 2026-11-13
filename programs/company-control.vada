@@ -1,0 +1,20 @@
+% Company control: X controls Y when X owns more than 50% of Y, directly or
+% through companies X already controls.
+
+own("Alpha Treasury", "Phoenix Vault", 0.7).
+own("Alpha Treasury", "Initech", 0.4).
+own("Phoenix Vault", "Initech", 0.1).
+own("Phoenix Vault", "Royal Crown Bank", 0.6).
+own("Royal Crown Bank", "Initech", 0.1).
+own("Royal Crown Bank", "Goldward Bank", 0.3).
+own("Goldleaf Bank", "Acme Corp", 0.4).
+own("Initech", "Acme Corp", 0.4).
+own("Initech", "Soylent Corp", 0.99).
+own("Soylent Corp", "Goldward Bank", 0.3).
+
+controlled_shares(X, Y, Y, Q) <- own(X, Y, Q), X <> Y.
+controlled_shares(X, Z, Y, Q) <- control(X, Y), own(Y, Z, Q), X <> Z, Z <> Y, X <> Y.
+total_controlled_shares(X, Y, S) <- controlled_shares(X, Y, Z, Q), S = msum(Q).
+control(X, Y) <- total_controlled_shares(X, Y, Q), Q > 0.5.
+
+@output("control").

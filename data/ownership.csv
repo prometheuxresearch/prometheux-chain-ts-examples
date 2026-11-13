@@ -1,0 +1,11 @@
+owner,company,share
+Alpha Treasury,Phoenix Vault,0.7
+Alpha Treasury,Initech,0.4
+Phoenix Vault,Initech,0.1
+Phoenix Vault,Royal Crown Bank,0.6
+Royal Crown Bank,Initech,0.1
+Royal Crown Bank,Goldward Bank,0.3
+Goldleaf Bank,Acme Corp,0.4
+Initech,Acme Corp,0.4
+Initech,Soylent Corp,0.99
+Soylent Corp,Goldward Bank,0.3

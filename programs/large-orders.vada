@@ -1,0 +1,18 @@
+% Orders in a region above a minimum total. The @param values are defaults;
+% pass `params` to px.vadalog.evaluate() to override them.
+
+@param("region", "North").
+@param("min_total", 0.0).
+
+orders(1, "North", "delivered", 1250.0).
+orders(2, "South", "pending", 480.0).
+orders(3, "North", "shipped", 2320.0).
+orders(4, "West", "delivered", 150.0).
+orders(5, "North", "delivered", 990.0).
+
+large_orders(OrderId, Status, Total) <-
+    orders(OrderId, Region, Status, Total),
+    Region = ${region},
+    Total >= ${min_total}.
+
+@output("large_orders").
