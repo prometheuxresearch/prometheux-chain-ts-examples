@@ -8,7 +8,8 @@ Full guide: [docs.prometheux.ai/integrations/typescript-sdk](https://docs.promet
 
 ## Setup
 
-Requires Node.js 22 or newer and a Prometheux account.
+Requires Node.js 22.9 or newer (the scripts load `.env` with `--env-file-if-exists`) and a
+Prometheux account.
 
 ```bash
 git clone https://github.com/prometheuxresearch/prometheux-chain-ts-examples.git
@@ -46,4 +47,5 @@ test/       Unit tests for the programs
 
 ## License
 
-BSD 3-Clause. See [LICENSE](LICENSE).
+MIT No Attribution (MIT-0): copy and adapt any of this code without attribution. See
+[LICENSE](LICENSE).

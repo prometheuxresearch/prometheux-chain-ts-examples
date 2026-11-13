@@ -1,9 +1,10 @@
 {
   "name": "prometheux-chain-ts-examples",
   "private": true,
+  "license": "MIT-0",
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.9"
   },
   "scripts": {
     "inline": "tsx --env-file-if-exists=.env src/01-evaluate-inline.ts",

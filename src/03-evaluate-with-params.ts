@@ -14,5 +14,6 @@ for (const params of [
   { region: '"South"', min_total: 0 },
 ]) {
   const result = (await px.vadalog.evaluate(program, { params })) as Evaluation;
+  console.log(`region ${params.region}, total >= ${params.min_total}`);
   console.table(rowsOf(result, "large_orders"));
 }
