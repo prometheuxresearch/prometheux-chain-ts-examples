@@ -14,14 +14,16 @@
     "your-data": "tsx --env-file-if-exists=.env src/05-evaluate-with-your-data.ts",
     "concepts": "tsx --env-file-if-exists=.env src/06-concepts.ts",
     "playground": "tsx --env-file-if-exists=.env src/07-playground.ts",
+    "browser": "node --env-file-if-exists=.env browser/serve.mjs",
     "test": "tsx --env-file-if-exists=.env --test test/*.test.ts",
-    "typecheck": "tsc"
+    "typecheck": "tsc && tsc -p browser"
   },
   "dependencies": {
-    "@pmtx/chain": "^0.1.1"
+    "@pmtx/chain": "^0.1.2"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
+    "esbuild": "^0.28.2",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   }
